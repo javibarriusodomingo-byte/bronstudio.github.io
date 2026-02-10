@@ -1,0 +1,453 @@
+/* ===================================
+   CSS Variables & Reset
+   =================================== */
+:root {
+    /* Colors - All black, no accents */
+    --color-bg: #FFFFFF;
+    --color-text: #000000;
+    --color-border: #000000;
+    
+    /* Typography - Nimbus Sans only */
+    --font-main: 'Nimbus Sans', 'Nimbus Sans L', 'Liberation Sans', Arial, sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-s: 1rem;
+    --spacing-m: 2rem;
+    --spacing-l: 4rem;
+    --spacing-xl: 6rem;
+    
+    /* Layout - Equal split */
+    --split-width: 50%;
+    --image-width: 50%;
+    --max-content-width: 500px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    line-height: 1.6;
+    overflow-x: hidden;
+    font-weight: 300;
+}
+
+/* ===================================
+   Typography - Nimbus Sans Light
+   =================================== */
+h1, h2, h3, h4, p, a, span, div {
+    font-family: var(--font-main);
+    font-weight: 300;
+    color: var(--color-text);
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    margin-bottom: var(--spacing-m);
+    font-weight: 300;
+}
+
+p {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    line-height: 1.7;
+    font-weight: 300;
+}
+
+a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+a:hover {
+    opacity: 0.6;
+}
+
+/* ===================================
+   Floating Navigation - On top of images
+   =================================== */
+.floating-nav {
+    position: fixed;
+    top: var(--spacing-m);
+    right: var(--spacing-m);
+    display: flex;
+    gap: var(--spacing-m);
+    z-index: 1000;
+    mix-blend-mode: difference;
+}
+
+.floating-nav a {
+    font-size: 0.9rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: #FFFFFF;
+    position: relative;
+}
+
+.floating-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #FFFFFF;
+    transition: width 0.3s ease;
+}
+
+.floating-nav a:hover::after {
+    width: 100%;
+}
+
+.floating-nav a:hover {
+    opacity: 1;
+}
+
+/* ===================================
+   Split Screen Layout - More Vertical
+   =================================== */
+.split-screen {
+    display: flex;
+    min-height: 100vh;
+}
+
+.split-screen.reverse {
+    flex-direction: row-reverse;
+}
+
+.left-panel {
+    width: var(--split-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-l) var(--spacing-m);
+    position: relative;
+    z-index: 2;
+    background: var(--color-bg);
+}
+
+.right-panel {
+    width: var(--image-width);
+    position: relative;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    max-width: var(--max-content-width);
+    width: 100%;
+    animation: fadeInUp 0.8s ease-out;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===================================
+   Parallax Images
+   =================================== */
+.parallax-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.parallax-layer {
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    width: 110%;
+    height: 120%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+/* ===================================
+   Hero Section
+   =================================== */
+.hero-section {
+    margin-top: 0;
+}
+
+.hero-section .content-wrapper {
+    text-align: center;
+}
+
+.hero-title {
+    margin-bottom: var(--spacing-m);
+    animation-delay: 0.2s;
+}
+
+.hero-subtitle {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-l);
+    animation-delay: 0.3s;
+}
+
+.hero-meta {
+    margin-bottom: var(--spacing-l);
+    animation-delay: 0.4s;
+}
+
+.hero-meta p {
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* ===================================
+   Projects Section - No borders
+   =================================== */
+.project {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.project.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.project-category {
+    display: inline-block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--spacing-s);
+    font-weight: 300;
+}
+
+.project-title {
+    margin-bottom: var(--spacing-m);
+}
+
+.project-meta {
+    margin-bottom: var(--spacing-m);
+}
+
+.project-meta p {
+    font-size: 0.85rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.project-description {
+    margin-bottom: var(--spacing-m);
+}
+
+.project-description p {
+    margin-bottom: var(--spacing-m);
+}
+
+.project-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-m);
+    margin-top: var(--spacing-l);
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.project-image {
+    height: 100%;
+}
+
+/* Stagger animation delays */
+.project:nth-child(1) { animation-delay: 0.1s; }
+.project:nth-child(2) { animation-delay: 0.2s; }
+.project:nth-child(3) { animation-delay: 0.3s; }
+.project:nth-child(4) { animation-delay: 0.4s; }
+.project:nth-child(5) { animation-delay: 0.5s; }
+
+/* ===================================
+   Footer
+   =================================== */
+.site-footer {
+    background: var(--color-bg);
+    color: var(--color-text);
+    padding: var(--spacing-l) var(--spacing-m);
+    border-top: 1px solid var(--color-border);
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.footer-content p {
+    font-size: 0.85rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* ===================================
+   Responsive Design
+   =================================== */
+@media (max-width: 1024px) {
+    :root {
+        --split-width: 100%;
+        --image-width: 100%;
+    }
+    
+    .split-screen {
+        flex-direction: column;
+        min-height: auto;
+    }
+    
+    .split-screen.reverse {
+        flex-direction: column;
+    }
+    
+    .left-panel,
+    .right-panel {
+        width: 100%;
+    }
+    
+    .right-panel {
+        min-height: 60vh;
+        order: -1;
+    }
+    
+    .split-screen.reverse .right-panel {
+        order: -1;
+    }
+    
+    .floating-nav {
+        top: var(--spacing-s);
+        right: var(--spacing-s);
+        gap: var(--spacing-s);
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: var(--spacing-m);
+    }
+}
+
+@media (max-width: 640px) {
+    .left-panel {
+        padding: var(--spacing-m);
+    }
+    
+    .floating-nav {
+        flex-wrap: wrap;
+        max-width: 200px;
+    }
+    
+    .floating-nav a {
+        font-size: 0.85rem;
+    }
+    
+    .project-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===================================
+   Print Styles
+   =================================== */
+@media print {
+    .floating-nav,
+    .right-panel {
+        display: none;
+    }
+    
+    .split-screen {
+        display: block;
+    }
+    
+    .left-panel {
+        width: 100%;
+    }
+}
+
+/* ===================================
+   Accessibility
+   =================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 1px solid var(--color-text);
+    outline-offset: 4px;
+}
+
+/* ===================================
+   Custom Scrollbar (optional)
+   =================================== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-text);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
