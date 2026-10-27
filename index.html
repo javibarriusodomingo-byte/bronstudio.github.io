@@ -1,325 +1,668 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brøn Studio – Circular and Cultural Architecture</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nimbus+Sans:wght@300;400&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Brøn Studio</title>
+<meta name="description" content="Brøn Studio is a Copenhagen practice for circular and cultural architecture, founded in 2020 by Javi Barriuso Domingo, Arkitekt MAA.">
+<style>
+/* Layout: one centred 4:5 picture per project, hero included, plus a text-only studio page; stacked down a white page with narrow margins. */
+:root {
+  --paper: #ffffff;
+  --ink: #0b0b0b;
+  --night: #000000;
+  --on-image: #ffffff;
+  --font: 'Helvetica Neue', Helvetica, 'Nimbus Sans', 'Nimbus Sans L', 'Liberation Sans', Arial, sans-serif;
+  --gutter: max(10px, 1.2vw);
+  --nav-h: 48px;
+  --w: min(calc(100vw - 2 * var(--gutter)), calc((100svh - var(--nav-h) - 2 * var(--gutter)) * 0.8));
+  --colw: 300px; /* width of the menu items = width of the text column */
+  --ease: cubic-bezier(.22,.61,.36,1);
+  color-scheme: light;
+}
+html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--font); font-weight: 400; font-size: 16px; line-height: 1.5;
+}
+[hidden] { display: none !important; }
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: .55; }
+button { font: inherit; }
+:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+
+/* ---------- Navigation ---------- */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px), var(--gutter));
+  padding-right: max(16px, env(safe-area-inset-right, 0px), var(--gutter));
+  background: var(--paper); font-size: .9rem;
+}
+.nav .links { display: flex; gap: clamp(.9rem, 2.4vw, 2rem); }
+/* Side-column layout: menu items centred in the white space right of the picture, spread over the text width. */
+@media (min-width: 1100px) and (min-aspect-ratio: 13/10) {
+  .nav .links {
+    position: absolute; top: env(safe-area-inset-top, 0px); bottom: 0; align-items: center; gap: 0;
+    width: var(--colw); justify-content: space-between;
+    left: calc(50% + var(--w) / 2 + ((50% - var(--w) / 2) - var(--colw)) / 2);
+  }
+}
+.nav button { all: unset; cursor: pointer; font-family: var(--font); font-weight: 400; }
+.contact { position: relative; display: flex; align-items: center; }
+.contact-menu {
+  position: absolute; top: calc(100% + .6rem); left: 0; display: grid; gap: .3rem;
+  background: var(--paper); padding-block: .2rem .4rem; white-space: nowrap;
+}
+.nav button:hover { opacity: .55; }
+.nav button:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+.wrap {
+  padding-left: max(10px, env(safe-area-inset-left, 0px), var(--gutter));
+  padding-right: max(10px, env(safe-area-inset-right, 0px), var(--gutter));
+}
+
+/* ---------- Hero ---------- */
+.hero { min-height: 100svh; box-sizing: border-box; display: grid; place-items: center;
+  padding-block: calc(var(--nav-h) + var(--gutter)) var(--gutter); scroll-snap-align: end; }
+.hero-frame {
+  position: relative; width: var(--w); aspect-ratio: 4 / 5; max-width: 100%;
+  overflow: hidden; background: #3a3a38;
+}
+.hero-frame > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Category list over the hero picture */
+.cats { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15em;
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.35; }
+.cats button { all: unset; cursor: pointer; color: var(--on-image); font-family: var(--font); font-weight: 400; letter-spacing: -0.01em; text-underline-offset: .18em; text-decoration-thickness: 1px; }
+.cats button:hover, .cats button[aria-pressed="true"] { text-decoration: underline; }
+/* Pale hero picture (Sjællandsgade staircase): categories in black */
+.hero-frame[data-hero="3"] .cats button { color: var(--ink); }
+.hero-frame[data-hero="3"] .cats button:focus-visible { outline-color: var(--ink); }
+.cats button:focus-visible { outline: 1px solid var(--on-image); outline-offset: 4px; }
+
+/* ---------- Project / studio text: black, lower right, beside the picture ---------- */
+main { container-type: inline-size; }
+.frame { position: relative; width: var(--w); max-width: 100%; }
+.panel {
+  box-sizing: border-box; color: var(--ink); font: 400 .9rem/1.45 var(--font); cursor: pointer;
+  width: var(--colw); max-width: 100%; margin-top: 1rem;
+}
+.panel p { margin: 0 0 1em; color: var(--ink); }
+.panel p:last-child { margin-bottom: 0; }
+.panel:focus { outline: none; }
+@media (min-width: 1100px) and (min-aspect-ratio: 13/10) {
+  .panel {
+    position: absolute; bottom: 0; margin: 0; max-height: 100%; overflow: auto;
+    left: calc(100% + ((100cqw - var(--w)) / 2 - var(--colw)) / 2);
+  }
+}
+
+/* ---------- Projects ---------- */
+.project {
+  min-height: 100svh; box-sizing: border-box; display: grid; place-items: center;
+  padding-block: calc(var(--nav-h) + var(--gutter)) var(--gutter); scroll-snap-align: end; scroll-margin-top: var(--nav-h);
+}
+.project:first-child { min-height: 0; padding-top: var(--gutter); }
+.square {
+  position: relative; margin: 0; width: var(--w); aspect-ratio: 4 / 5; max-width: 100%;
+  overflow: hidden; background: #eeeeec;
+  transition: opacity 1s var(--ease), transform 1s var(--ease);
+}
+.js .project.pending .square { opacity: 0; transform: translateY(40px); }
+.stage { all: unset; position: absolute; inset: 0; cursor: pointer; display: block; touch-action: pan-y; }
+.stage:focus-visible { outline: 1px solid var(--on-image); outline-offset: -6px; }
+.track { display: flex; height: 100%; transition: transform .7s var(--ease); will-change: transform; }
+.track img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+.side {
+  position: absolute; top: 50%; z-index: 3; width: 44px; height: 64px; margin-top: -32px; border: 0; padding: 0; background: none;
+  cursor: pointer; display: grid; place-items: center;
+}
+.side::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--on-image); }
+.side.prev { left: 4px; } .side.next { right: 4px; }
+.side:focus-visible { outline: 1px solid var(--on-image); outline-offset: -8px; }
+/* The two dots show only while the pointer is over the picture (always on touch screens). */
+@media (hover: hover) {
+  .side { visibility: hidden; }
+  .square:hover .side, .square:focus-within .side { visibility: visible; }
+}
+.square.open .stage { cursor: pointer; }
+
+/* ---------- Studio page ---------- */
+.studio-page { min-height: calc(100svh - 6vh); box-sizing: border-box; padding-block: calc(var(--nav-h) + 10vh) 8vh; }
+.studio-page .col { width: var(--w); max-width: 100%; margin: 0 auto; font-size: 1rem; line-height: 1.5; }
+.studio-page p { margin: 0 0 1em; }
+.studio-page h2 { font: inherit; margin: 3em 0 1em; }
+.studio-page ul { list-style: none; margin: 0; padding: 0; }
+.studio-page li { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: 1rem; margin: 0 0 .35em; font-variant-numeric: tabular-nums; }
+.studio-page a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* ---------- Footer ---------- */
+footer { margin-top: 6vh; }
+footer .in { padding-block: 1.25rem 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem; font-size: .82rem; }
+footer p { margin: 0; }
+footer .mail { user-select: all; }
+
+@media (max-width: 760px) {
+  :root { --nav-h: 46px; }
+  .nav { font-size: .82rem; }
+  .project { min-height: auto; padding-block: var(--gutter); scroll-snap-align: none; }
+  .hero { min-height: auto; scroll-snap-align: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
 </head>
 <body>
-    <!-- Floating Navigation -->
-    <nav class="floating-nav">
-        <a href="#home">Brøn Studio</a>
-        <a href="#projects">Projects</a>
-        <a href="mailto:jbd@bronstudio.net">Contact</a>
-        <a href="https://www.instagram.com/bronstudiobron/" target="_blank">Instagram</a>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-section split-screen">
-        <div class="left-panel">
-            <div class="content-wrapper">
-                <h1 class="hero-title">Brøn Studio<br>Circular and Cultural Architecture</h1>
-                <p class="hero-subtitle">Brøn Studio works with transformation, adaptive reuse, and heritage integration—developing architecture that unites context, circular strategies, and refined detailing.</p>
-                
-                <div class="hero-meta">
-                    <p>Founded 2020</p>
-                    <p>Copenhagen</p>
-                    <p>Javi Barriuso Domingo, Arkitekt MAA</p>
-                </div>
-            </div>
-        </div>
-        <div class="right-panel">
-            <div class="hero-image parallax-container">
-                <div class="parallax-layer" style="background-image: url('images/hero.jpg');"></div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Projects Grid -->
-    <section id="projects" class="projects-section">
-        
-        <!-- Project 1: HET Energy Accumulator -->
-        <article class="project split-screen" data-project="het">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Infrastructure with Identity</span>
-                    <h2 class="project-title">HET Energy Accumulator</h2>
-                    <div class="project-meta">
-                        <p>Location: Malmö, Sweden</p>
-                        <p>Year: 2024</p>
-                        <p>Type: Energy Infrastructure</p>
-                        <p>Team: Javi Barriuso, Carlos Ramos, Holst Engineering</p>
-                        <p>Images: Zumo Digital </p>
-                    </div>
-                    <div class="project-description">
-                        <p>A green energy accumulator built with repurposed materials loaded with identity. For Malmö. From Malmö, with Malmö addresses how to integrate an infrastructural tower into its physical setting and the city's collective memory.</p>
-                        <p>The solution lies in reusing materials from Malmö Stadion, originally built for the 1958 FIFA World Cup. By repurposing the stadium's materials, a connection to the city's history is preserved, while saving 500,000 kg of CO₂ in the construction process.</p>
-                    </div>
-                    <div class="project-stats">
-                        <div class="stat">
-                            <span class="stat-number">371,000 kg</span>
-                            <span class="stat-label">CO₂ saved facade</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">42,200 kg</span>
-                            <span class="stat-label">CO₂ saved staircase</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/het-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+<nav class="nav" aria-label="Main">
+  <a href="#top">Brøn Studio</a>
+  <div class="links">
+    <button type="button" id="projects-btn" aria-expanded="false" aria-controls="cats">Projects</button>
+    <a href="#studio">Studio</a>
+    <span class="contact">
+      <button type="button" id="contact-btn" aria-expanded="false" aria-controls="contact-menu">Contact</button>
+      <span class="contact-menu" id="contact-menu" hidden>
+        <a href="mailto:jbd@bronstudio.net">jbd@bronstudio.net</a>
+        <a href="tel:+4553506039">+45 53 50 60 39</a>
+      </span>
+    </span>
+    <a href="https://www.instagram.com/bronstudiobron/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</nav>
 
-        <!-- Project 2: Hemmesta -->
-        <article class="project split-screen reverse" data-project="hemmesta">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Collective Landmark</span>
-                    <h2 class="project-title">Hemmesta Water Tower</h2>
-                    <div class="project-meta">
-                        <p>Location: Värmdö, Sweden</p>
-                        <p>Year: 2023</p>
-                        <p>Type: Infrastructure</p>
-                        <p>Team: Javi Barriuso, Carlos Ramos</p>
-                        <p>Images: Yannis Amasri Sierra </p>
-                    </div>
-                    <div class="project-description">
-                        <p>In suburban areas, public institutions are scarce, and individual buildings often create a sense of isolation. This makes it easy to lose a feeling of community and belonging. Public infrastructure should not only provide services but also foster connections, offering a shared identity for residents.</p>
-                        <p>Our proposal for Värmdö's water tower seeks to unite the area with a civic symbol—a sun or moon rising between the trees—serving as a focal point for the community. Additionally, the water tower is one of the first to incorporate prefabrication and circularity from the outset, using low-carbon concrete elements.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/hemmesta-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+<main id="top">
+  <header class="hero wrap" id="hero">
+    <div class="frame">
+    <div class="hero-frame" id="hero-frame">
+      <img id="hero-img" alt="Brøn Studio" width="1600" height="2000" fetchpriority="high">
+      <script>
+        /* One of the three hero pictures, chosen at random on every visit. */
+        (function () {
+          var n = 1 + Math.floor(Math.random() * 3);
+          document.getElementById('hero-img').src = 'images/hero-' + n + '.jpg';
+          document.getElementById('hero-frame').setAttribute('data-hero', n);
+        })();
+      </script>
+      <noscript><img src="images/hero-1.jpg" alt="Brøn Studio" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></noscript>
+      <nav class="cats" id="cats" aria-label="Project categories" hidden>
+        <button type="button" data-cat="re-use">re-use</button>
+        <button type="button" data-cat="installations">installations</button>
+        <button type="button" data-cat="infrastructure">infrastructure</button>
+        <button type="button" data-cat="cultural">cultural</button>
+        <button type="button" data-cat="residential">residential</button>
+      </nav>
+    </div>
+    </div>
+  </header>
 
-        <!-- Project 3: Maritime Boarding School -->
-        <article class="project split-screen" data-project="maritime">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Heritage Reimagined</span>
-                    <h2 class="project-title">Det Maritime Skolehjem</h2>
-                    <div class="project-meta">
-                        <p>Location: Helsingør, Denmark</p>
-                        <p>Year: 2025</p>
-                        <p>Type: Dormitory & Community House</p>
-                        <p>Team: Overbyen, Toast, Detblå, Brøn Studio</p>
-                        <p>Images: Zumo Digital </p>
-                    </div>
-                    <div class="project-description">
-                        <p>The Maritime Boarding School emerges from a close reading of Helsingør's historic fabric and the untapped potential of the 1938 Øresund Hospital. A single, precise extension unlocks the existing building's full capacity—enhancing its structure, proportions, and durability—while preserving 206 tons of embodied CO₂.</p>
-                        <p>Facing the city, a one-storey community house becomes the campus's public face: a low-carbon, biobased structure of timber, reclaimed brick, and wood-fibre insulation, built entirely without concrete foundations.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/maritime-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+  <div id="work" class="wrap">
+<section class="project" id="het" aria-label="HET Energy Accumulator" data-cats="re-use infrastructure" data-prio="re-use infrastructure">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-het" aria-label="Show project facts for HET Energy Accumulator">
+      <span class="track"><img src="images/het-1.jpg" alt="HET Energy Accumulator, image 1 of 4" width="1600" height="2000" decoding="async" draggable="false"><img src="images/het-2.jpg" alt="HET Energy Accumulator, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/het-3.jpg" alt="HET Energy Accumulator, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/het-4.jpg" alt="HET Energy Accumulator, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-het" role="dialog" aria-label="Project text, HET Energy Accumulator" tabindex="-1" hidden>
+      <p>HET Energy Accumulator</p>
+      <p>Malmö Stadion, built for the 1958 World Cup, is to be demolished. Its concrete and cladding are taken down, sorted and rebuilt as the skin and stair of a new energy tower: 540 façade cassettes and 28 flights of reused steps, holding around 500 tonnes of CO₂ that would otherwise be emitted making them again. Seen across the reeds, the façade carries the stadium&#x27;s own grid.</p>
+      <p>Authors: Javi Barriuso Domingo, Carlos Ramos<br>Collaborators: Holst Engineering<br>Images: Zumo Digital</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="echoes" aria-label="Echoes of the City" data-cats="re-use installations cultural" data-prio="re-use installations">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-echoes" aria-label="Show project facts for Echoes of the City">
+      <span class="track"><img src="images/echoes-1.jpg" alt="Echoes of the City, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/echoes-2.jpg" alt="Echoes of the City, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/echoes-3.jpg" alt="Echoes of the City, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/echoes-4.jpg" alt="Echoes of the City, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-echoes" role="dialog" aria-label="Project text, Echoes of the City" tabindex="-1" hidden>
+      <p>Echoes of the City</p>
+      <p>For twenty-five years Mogens Falk-Sørensen (1907–1975) photographed Copenhagen for the City Archives. The exhibition is built from the same city, one layer further down: paving stones lifted from inner-city pavements, pink granite kerbs, marble mosaic from Amalienborg and crushed asphalt, all from the municipal material yard on Selinegade. Nothing is cut or fixed. When the exhibition closes, the stone goes back to the yard to be used again.</p>
+      <p>Authors: Javi Barriuso Domingo<br>Collaborators: Martin Ransby, Anders Gerning<br>Images: [to confirm]</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="astruptunet" aria-label="Astruptunet Visitor Centre" data-cats="cultural" data-prio="cultural">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-astruptunet" aria-label="Show project facts for Astruptunet Visitor Centre">
+      <span class="track"><img src="images/astruptunet-1.jpg" alt="Astruptunet Visitor Centre, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/astruptunet-2.jpg" alt="Astruptunet Visitor Centre, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/astruptunet-3.jpg" alt="Astruptunet Visitor Centre, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/astruptunet-4.jpg" alt="Astruptunet Visitor Centre, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-astruptunet" role="dialog" aria-label="Project text, Astruptunet Visitor Centre" tabindex="-1" hidden>
+      <p>Astruptunet Visitor Centre</p>
+      <p>Visitors reach Astruptunet by bus, boat, car, bicycle and on foot, arriving from opposite ends of the site. The visitor centre gives them one beginning. A light timber structure with a sloping roof rests on a solid base, turned 45 degrees to the site. From land it reads as a low pavilion half taken in by the trees; from the lake it shows its full height. The footprint is small and the timber is reclaimed. The rest of the site stays as it was.</p>
+      <p>Authors: Javi Barriuso Domingo, Carlos Ramos<br>Images: Afterreal, Andre Sashko</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="orebro" aria-label="Örebro Stadspark" data-cats="re-use" data-prio="re-use">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-orebro" aria-label="Show project facts for Örebro Stadspark">
+      <span class="track"><img src="images/orebro-1.jpg" alt="Örebro Stadspark, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/orebro-2.jpg" alt="Örebro Stadspark, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/orebro-3.jpg" alt="Örebro Stadspark, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/orebro-4.jpg" alt="Örebro Stadspark, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-orebro" role="dialog" aria-label="Project text, Örebro Stadspark" tabindex="-1" hidden>
+      <p>Örebro Stadspark</p>
+      <p>Georg Arn&#x27;s 1933 plan made the park a sequence of rooms. The proposal becomes the garden&#x27;s edge, drawn between the path along the Svartån and the stillness inside. A rammed-earth wall of unfired local soil holds the low western sun and extends the season by weeks. Beside it runs a pergola of reclaimed timber, brick and stone from the municipal depot, every column joined by the same steel collar. The timber frame stores 12 kg CO₂ per m², where a conventional build would emit around 100.</p>
+      <p>Authors: Javi Barriuso Domingo <br>Images: Brøn Studio </p>
+    </div>
+  </div>
+</section>
+<section class="project" id="maritime" aria-label="Det Maritime Skolehjem" data-cats="re-use residential" data-prio="re-use residential">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-maritime" aria-label="Show project facts for Det Maritime Skolehjem">
+      <span class="track"><img src="images/maritime-1.jpg" alt="Det Maritime Skolehjem, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/maritime-2.jpg" alt="Det Maritime Skolehjem, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/maritime-3.jpg" alt="Det Maritime Skolehjem, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/maritime-4.jpg" alt="Det Maritime Skolehjem, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-maritime" role="dialog" aria-label="Project text, Det Maritime Skolehjem" tabindex="-1" hidden>
+      <p>Det Maritime Skolehjem</p>
+      <p>Øresund Hospital has stood in Helsingør since 1938. One precise roof extension frees the whole plan, improves structure, proportion and durability at once, and keeps 206 tonnes of embodied CO₂ in the building. Facing the city, the new community house is single-storey and fully biobased: timber frame, reclaimed brick, wood-fibre insulation and no concrete foundations. Keep what already carries. Build the rest light, from things that have grown.</p>
+      <p>Authors: Javi Barriuso Domingo<br>Collaborators: Overbyen Arkitekter, Toast, Detblå<br>Images: Zumo Digital, Andre Sashko</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="lindevej" aria-label="Lindevej 21" data-cats="residential" data-prio="residential">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-lindevej" aria-label="Show project facts for Lindevej 21">
+      <span class="track"><img src="images/lindevej-1.jpg" alt="Lindevej 21, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/lindevej-2.jpg" alt="Lindevej 21, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/lindevej-3.jpg" alt="Lindevej 21, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/lindevej-4.jpg" alt="Lindevej 21, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-lindevej" role="dialog" aria-label="Project text, Lindevej 21" tabindex="-1" hidden>
+      <p>Lindevej 21</p>
+      <p>The extension starts from the existing house: yellow brick in Koch bond, a steep 45° roof and white-painted timber windows, so the new part settles into the street. AI visualisations let us test materials and proportions quickly against both street and garden. The precise images made the dialogue with the municipality concrete and helped secure the permit despite stricter conservation requirements.</p>
+      <p>Authors: Javi Barriuso Domingo <br>Images: Brøn Studio</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="hemmesta" aria-label="Hemmesta Water Tower" data-cats="re-use infrastructure" data-prio="">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-hemmesta" aria-label="Show project facts for Hemmesta Water Tower">
+      <span class="track"><img src="images/hemmesta-1.jpg" alt="Hemmesta Water Tower, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/hemmesta-2.jpg" alt="Hemmesta Water Tower, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/hemmesta-3.jpg" alt="Hemmesta Water Tower, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/hemmesta-4.jpg" alt="Hemmesta Water Tower, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-hemmesta" role="dialog" aria-label="Project text, Hemmesta Water Tower" tabindex="-1" hidden>
+      <p>Hemmesta Water Tower</p>
+      <p>In suburban areas public institutions are scarce, and it is easy to lose a sense of belonging. The proposal gives Värmdö a civic symbol, a sun or moon rising between the trees. The tower is among the first to build in prefabrication and circularity from the start, using low-carbon concrete elements that can be taken apart and reused.</p>
+      <p>Authors: Javi Barriuso Domingo, Carlos Ramos <br>Images: Yannis Amasri Sierra</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="urnes" aria-label="Urnes World Heritage Centre" data-cats="cultural" data-prio="cultural">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-urnes" aria-label="Show project facts for Urnes World Heritage Centre">
+      <span class="track"><img src="images/urnes-1.jpg" alt="Urnes World Heritage Centre, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/urnes-2.jpg" alt="Urnes World Heritage Centre, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/urnes-3.jpg" alt="Urnes World Heritage Centre, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/urnes-4.jpg" alt="Urnes World Heritage Centre, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-urnes" role="dialog" aria-label="Project text, Urnes World Heritage Centre" tabindex="-1" hidden>
+      <p>Urnes World Heritage Centre</p>
+      <p>Urnes Stave Church is reached on foot, up a slope, through an orchard tended for centuries. The building reworks the existing path into a hairpin that joins two levels at a gentle, accessible gradient. Set partly into the hillside, it reads as a fold in the ground. Below lies the heritage centre; above, the roof becomes Urneshagen, an extension of the orchard to sit and look out before the last stretch to the church.</p>
+      <p>Authors: Javi Barriuso Domingo, Victor Lacima, Gonzalo Rivas Zinno <br>Images: Gonzalo Rivas Zinno and Brøn Studio </p>
+    </div>
+  </div>
+</section>
+<section class="project" id="dune" aria-label="DUNE, Chart Art Fair Pavilion" data-cats="installations re-use cultural" data-prio="installations">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-dune" aria-label="Show project facts for DUNE, Chart Art Fair Pavilion">
+      <span class="track"><img src="images/dune-1.jpg" alt="DUNE, Chart Art Fair Pavilion, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/dune-2.jpg" alt="DUNE, Chart Art Fair Pavilion, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/dune-3.jpg" alt="DUNE, Chart Art Fair Pavilion, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/dune-4.jpg" alt="DUNE, Chart Art Fair Pavilion, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-dune" role="dialog" aria-label="Project text, DUNE, Chart Art Fair Pavilion" tabindex="-1" hidden>
+      <p>DUNE, Chart Art Fair Pavilion</p>
+      <p>An abstract greenhouse in the courtyard of Kunsthal Charlottenborg: a frame of untreated timber, a skin of plastic film, and inside a dune of white sand to sit on. A fair lasts four days, so the question was what the pavilion becomes afterwards. The plastic came as surplus from Spanish greenhouses and left as handbags sewn by Studio Soriano in Nørrebro. The soap-treated timber went on to another of our projects.</p>
+      <p>Authors: Barila: Brøn Studio (Javi Barriuso, Anders Fønss), VLA (Victor Lacima), GRZA (Gonzalo Rivas)<br>Collaborators: Studio Soriano<br>Images: Joakim Züger / Barks Projects</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="sjaellandsgade" aria-label="Sjællandsgade" data-cats="residential" data-prio="">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-sjaellandsgade" aria-label="Show project facts for Sjællandsgade">
+      <span class="track"><img src="images/sjaellandsgade-1.jpg" alt="Sjællandsgade, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/sjaellandsgade-2.jpg" alt="Sjællandsgade, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/sjaellandsgade-3.jpg" alt="Sjællandsgade, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/sjaellandsgade-4.jpg" alt="Sjællandsgade, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-sjaellandsgade" role="dialog" aria-label="Project text, Sjællandsgade" tabindex="-1" hidden>
+      <p>Sjællandsgade</p>
+      <p>Two apartments joined into one home for a young family. The staircase is the most significant element of a long process with fire and structural documentation: 15 risers of 199.3 mm in Danish Douglas fir, finished with linseed oil and fixed with stainless steel. Ordinary materials, carefully treated and assembled.</p>
+      <p>Authors: Javi Barriuso Domingo </p>
+    </div>
+  </div>
+</section>
+<section class="project" id="cruilla" aria-label="Festival Cruïlla" data-cats="installations re-use" data-prio="">
+  <div class="frame">
+  <figure class="square" data-n="3">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-cruilla" aria-label="Show project facts for Festival Cruïlla">
+      <span class="track"><img src="images/cruilla-1.jpg" alt="Festival Cruïlla, image 1 of 3" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/cruilla-2.jpg" alt="Festival Cruïlla, image 2 of 3" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/cruilla-3.jpg" alt="Festival Cruïlla, image 3 of 3" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-cruilla" role="dialog" aria-label="Project text, Festival Cruïlla" tabindex="-1" hidden>
+      <p>Festival Cruïlla</p>
+      <p>The Occident stage becomes an instrument. Flexible aluminium tubes of different diameters hang in the depth of the scaffold like organ pipes, or like the fly curtains of a house by the sea, catching the crowd&#x27;s movement and the colours of the light show. Beer kegs act as counterweights. The whole system comes apart, and every component returns to the building trade afterwards.</p>
+      <p>Authors: Javi Barriuso Domingo<br>Images: Brøn Studio</p>
+    </div>
+  </div>
+</section>
+<section class="project" id="autopoul" aria-label="Autopoul" data-cats="installations re-use" data-prio="">
+  <div class="frame">
+  <figure class="square" data-n="3">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-autopoul" aria-label="Show project facts for Autopoul">
+      <span class="track"><img src="images/autopoul-1.jpg" alt="Autopoul, image 1 of 3" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/autopoul-2.jpg" alt="Autopoul, image 2 of 3" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/autopoul-3.jpg" alt="Autopoul, image 3 of 3" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-autopoul" role="dialog" aria-label="Project text, Autopoul" tabindex="-1" hidden>
+      <p>Autopoul</p>
+      <p>A former workshop in Nordvest turned into a lively corner for the neighbourhood, despite a tight budget, fire safety demands and restrictive planning. A standard portable structure activated the front yard without altering the building&#x27;s approved conditions from 1961, and an exemption allowed the yard to become a terrace. The industrial interiors hosted performances and events.</p>
+      <p>Authors: Javi Barriuso Domingo, Anders Fønss <br>Images: Niels Ulrik </p>
+    </div>
+  </div>
+</section>
+<section class="project" id="ferraters" aria-label="Can Ferraters" data-cats="residential re-use" data-prio="residential re-use">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-ferraters" aria-label="Show project facts for Can Ferraters">
+      <span class="track"><img src="images/ferraters-1.jpg" alt="Can Ferraters, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/ferraters-2.jpg" alt="Can Ferraters, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/ferraters-3.jpg" alt="Can Ferraters, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/ferraters-4.jpg" alt="Can Ferraters, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-ferraters" role="dialog" aria-label="Project text, Can Ferraters" tabindex="-1" hidden>
+      <p>Can Ferraters</p>
+      <p>A 19th-century kitchen in a listed house, made usable without being changed. Instead of building modern equipment into the room, we hid it in three new free-standing objects placed among the existing ones, readable as furniture or as ornament. The palette comes from the site: reclaimed white Spanish marble, dark green lacquered metal and dark green linoleum.</p>
+      <p>Authors: Javi Barriuso Domingo<br></p>
+    </div>
+  </div>
+</section>
+<section class="project" id="gladsaxe" aria-label="Gladsaxe for Generations" data-cats="re-use residential" data-prio="">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-gladsaxe" aria-label="Show project facts for Gladsaxe for Generations">
+      <span class="track"><img src="images/gladsaxe-1.jpg" alt="Gladsaxe for Generations, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/gladsaxe-2.jpg" alt="Gladsaxe for Generations, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/gladsaxe-3.jpg" alt="Gladsaxe for Generations, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/gladsaxe-4.jpg" alt="Gladsaxe for Generations, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-gladsaxe" role="dialog" aria-label="Project text, Gladsaxe for Generations" tabindex="-1" hidden>
+      <p>Gladsaxe for Generations</p>
+      <p>Høje Gladsaxe sits at the edge of the city: culture, work and social life happen elsewhere, distances are sized for cars, and the flats are locked into load-bearing concrete panels. The proposal adds flexible rooms that neighbours can book for guests, work or gatherings, alongside homes that cannot adapt on their own. Underused garages are swapped for the public programmes that used to sit at the estate&#x27;s edges and become small plazas, and the large parking areas are re-naturalised into a green public strip broken down into human-scale clusters.</p>
+      <p>Authors: Javi Barriuso Domingo, Carlos Ramos, Anders Fønss<br> Images: Brøn Studio </p>
+    </div>
+  </div>
+</section>
+<section class="project" id="phus" aria-label="P-hus 3.02" data-cats="infrastructure" data-prio="">
+  <div class="frame">
+  <figure class="square" data-n="4">
+    <button class="stage" type="button" aria-expanded="false" aria-controls="facts-phus" aria-label="Show project facts for P-hus 3.02">
+      <span class="track"><img src="images/phus-1.jpg" alt="P-hus 3.02, image 1 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/phus-2.jpg" alt="P-hus 3.02, image 2 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/phus-3.jpg" alt="P-hus 3.02, image 3 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"><img src="images/phus-4.jpg" alt="P-hus 3.02, image 4 of 4" width="1600" height="2000" loading="lazy" decoding="async" draggable="false"></span>
+    </button>
+    <button class="side prev" type="button" aria-label="Previous image"></button><button class="side next" type="button" aria-label="Next image"></button>
+  </figure>
+    <div class="panel" id="facts-phus" role="dialog" aria-label="Project text, P-hus 3.02" tabindex="-1" hidden>
+      <p>P-hus 3.02</p>
+      <p>Nordhavn is changing fast, and its industrial and maritime past risks disappearing with it. The parking house is designed in the spirit of the port&#x27;s warehouses, ferry terminals and ships. One simple motif carries it: the awning, made by bending the metal skin of the façade. It recalls sails, the lightness of maritime structures and the cantilevers of harbour buildings, and through repetition it turns the façade into a silhouette rather than a finish.</p>
+      <p>Authors: Javi Barriuso Domingo<br> Images:Brøn Studio </p>
+    </div>
+  </div>
+</section>
+  </div>
+</main>
 
-        <!-- Project 4: Astruptunet Visitor Center -->
-        <article class="project split-screen reverse" data-project="astruptunet">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Supporting Cultural Spaces</span>
-                    <h2 class="project-title">Astruptunet Visitor Center</h2>
-                    <div class="project-meta">
-                        <p>Location: Jølster, Norway</p>
-                        <p>Year: 2024</p>
-                        <p>Type: Visitor Center</p>
-                        <p>Team: Javi Barriuso, Carlos Ramos </p>
-                    </div>
-                    <div class="project-description">
-                        <p>The visitor center consists of a lightweight timber structure with a sloping roof, placed atop a solid base. Rotated 45 degrees, it merges with the surroundings and appears as a small one-story pavilion from some angles, while revealing its full height from the lake.</p>
-                        <p>Its compact footprint minimizes environmental impact, and the structure is made from recycled wood sourced sustainably. The center is carefully integrated into the landscape, leaving the rest of the site to nature.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/astruptunet-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+<section class="studio-page wrap" id="studio" aria-label="Studio" hidden>
+  <div class="col">
+    <p>What is already here</p>
+    <p>A stadium, a hospital, a housing block from the 1950s, a pile of surplus fencing in a municipal material yard. Every project begins with something that already exists and already means something to someone.</p>
+    <p>Brøn Studio treats that material as both construction and memory. We measure before we draw. We source materials close to the site. We build so that things can be taken apart and used once more.</p>
+    <p>The work moves between infrastructure and a staircase, between a UNESCO site and a kitchen. What holds it together is an interest in the ordinary and a conviction that identity is not added to a building but found again in it.</p>
+    <p>Founded in Copenhagen, 2020. Javi Barriuso Domingo, Arkitekt MAA.</p>
 
-        <!-- Project 5: Urnes World Heritage Center -->
-        <article class="project split-screen" data-project="urnes">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Supporting Cultural Spaces</span>
-                    <h2 class="project-title">Urnes World Heritage Center</h2>
-                    <div class="project-meta">
-                        <p>Location: Luster, Norway</p>
-                        <p>Year: 2022</p>
-                        <p>Type: Visitor Center & Exhibition</p>
-                        <p>Team: Brøn Studio, Victor Lacima Architects, Gonzalo Rivas Zinno</p>
-                    </div>
-                    <div class="project-description">
-                        <p>Our proposal is not an end in itself, but a pause on the ascent to the historic Stave Church. The project is conceived as a modification of the existing path—a mountain trail that connects two topographic levels through a hairpin turn.</p>
-                        <p>By embedding the volume partially into the mountainside, the building appears as a mere fold in the terrain, allowing the surrounding landscape to remain dedicated to the historic orchard.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/urnes-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+    <h2>Grants</h2>
+    <ul>
+      <li><span>2026</span><span>Statens Kunstfond, project grant</span></li>
+      <li><span>2026</span><span>Dreyers Fond, project grant</span></li>
+      <li><span>2025</span><span>Statens Kunstfond, work grant</span></li>
+      <li><span>2024</span><span>Dreyers Fond &amp; Arkitektforeningen, Projekt START</span></li>
+      <li><span>2024</span><span>Dreyers Fond &amp; Arkitektforeningen, programme for new practices</span></li>
+    </ul>
 
-        <!-- Project 6: Gribskov House -->
-        <article class="project split-screen reverse" data-project="gribskov">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Elastic Domestic Typologies</span>
-                    <h2 class="project-title">Gribskov House</h2>
-                    <div class="project-meta">
-                        <p>Location: Nødebo, Hillerød, Denmark</p>
-                        <p>Year: 2021–24</p>
-                        <p>Type: Transformation</p>
-                    </div>
-                    <div class="project-description">
-                        <p>An exercise in de-renovating a 1964 single-family house, originally designed by Henrik Gormsen. After decades of fragmentation, the house has been restored to its rational spirit and re-established as a cluster of serial, square rooms.</p>
-                        <p>By dissolving the hierarchical division between night and day, a typological elasticity emerges, allowing the dwelling to accommodate changing needs from a nuclear family to multi-generational living without further resource consumption.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/gribskov-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+    <h2>Awards</h2>
+    <ul>
+      <li><span>2026</span><span>Shortlisted, Concéntrico × Cruïlla, Barcelona</span></li>
+      <li><span>2025</span><span>4th prize, Genossenschaft PWG, Zürich</span></li>
+      <li><span>2024</span><span>2nd prize, HET Energy Accumulator, Malmö</span></li>
+      <li><span>2024</span><span>Honourable mention, Astruptunet Visitor Centre, Norway</span></li>
+      <li><span>2023</span><span>Purchase, Espacio El Cerro, Montevideo</span></li>
+      <li><span>2023</span><span>Honourable mention, Gladsaxe for Generationer, Denmark</span></li>
+      <li><span>2022</span><span>Winner, Chart Art Fair Pavilion, Copenhagen</span></li>
+      <li><span>2022</span><span>Purchase, Urnes UNESCO Visitor Centre, Norway</span></li>
+      <li><span>2020</span><span>Purchase, P-hus 3.02 Nordhavn, Copenhagen</span></li>
+    </ul>
 
-        <!-- Project 7: Sjællandsgade -->
-        <article class="project split-screen" data-project="sjaellandsgade">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Elastic Domestic Typologies</span>
-                    <h2 class="project-title">Sjællandsgade</h2>
-                    <div class="project-meta">
-                        <p>Location: Nørrebro, Copenhagen</p>
-                        <p>Year: 2024</p>
-                        <p>Type: Transformation</p>
-                    </div>
-                    <div class="project-description">
-                        <p>A transformation and renovation project that fulfills the long-awaited expectations for living space for a young family in the city. A staircase as the most significant and perhaps symbolic element in an intense process involving fire class 2 and construction class 2 documentation.</p>
-                        <p>The staircase as a celebration of the end of a long process and an enabler of a new and long-awaited life. Carefully selected normal materials, carefully treated and thoughtfully assembled to aestheticize the very act of connecting two apartments. Constructed from Danish Douglas pine, stained with linseed oil and stainless steel fittings.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/sjaellandsgade-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+    <h2>Publications</h2>
+    <ul>
+      <li><span>2026</span><span><a href="https://arkitektforeningen.dk/arkitekten/latest-issue-nyeste-nummer-arkitekten-08-2026-new-connections-1-nye-forbindelser-1/" target="_blank" rel="noopener">Arkitekten</a></span></li>
+      <li><span>2025</span><span><a href="https://dreyersfond.dk/" target="_blank" rel="noopener">Dreyers Fond</a></span></li>
+      <li><span>2025</span><span><a href="https://arkitektforeningen.dk/" target="_blank" rel="noopener">Arkitektforeningen</a></span></li>
+      <li><span>2022</span><span><a href="https://www.dezeen.com/2022/08/25/dune-pavilion-barila-collective-chart-art-fair-2022/" target="_blank" rel="noopener">Dezeen</a></span></li>
+      <li><span>2022</span><span><a href="https://divisare.com/" target="_blank" rel="noopener">Divisare</a></span></li>
+    </ul>
+  </div>
+</section>
 
-        <!-- Project 8: Can Ferraters -->
-        <article class="project split-screen reverse" data-project="ferraters">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Elastic Domestic Typologies</span>
-                    <h2 class="project-title">Can Ferraters</h2>
-                    <div class="project-meta">
-                        <p>Location: Argentona, Spain</p>
-                        <p>Year: 2021</p>
-                        <p>Type: Transformation</p>
-                    </div>
-                    <div class="project-description">
-                        <p>The transformation of a 19th-century kitchen within a listed property. The strategy preserves the room's historical integrity by concealing all modern equipment behind three new, free-standing objects.</p>
-                        <p>The material palette is extracted directly from the site's original tones and textures: reclaimed white Spanish marble, dark green lacquered metal, and dark green linoleum. By using reclaimed marble, a direct material connection to the house's history is created.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/ferraters-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+<footer id="contact">
+  <div class="in wrap">
+    <p><a class="mail" href="mailto:jbd@bronstudio.net">jbd@bronstudio.net</a></p>
+    <p><a href="tel:+4553506039">+45 53 50 60 39</a></p>
+    <p><a href="https://www.instagram.com/bronstudiobron/" target="_blank" rel="noopener">@bronstudiobron</a></p>
+    <p>Brøn Studio · Roarsvej 19, 2 th, 2000 Frederiksberg</p>
+    <p>CVR 40877614 · © 2026</p>
+  </div>
+</footer>
 
-        <!-- Project 9: Autopoul -->
-        <article class="project split-screen" data-project="autopoul">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Small Interventions</span>
-                    <h2 class="project-title">Autopoul</h2>
-                    <div class="project-meta">
-                        <p>Location: Copenhagen NV, Denmark</p>
-                        <p>Year: 2021–24</p>
-                        <p>Type: Urban Transformation</p>
-                        <p>Team: Javi Barriuso, Anders Fønss</p>
-                    </div>
-                    <div class="project-description">
-                        <p>A former workshop in Copenhagen Nordvest, transformed into a lively urban corner for the local community, despite a tight budget, fire safety challenges, and restrictive urban planning regulations.</p>
-                        <p>With a pragmatic approach, we activated the front yard with a standard portable structure, which allowed the space to be used without altering the building's approved conditions from 1961. The interior spaces, with their industrial charm, were used for artistic performances and events.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/autopoul-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+<script>
+(function () {
+  document.documentElement.classList.add('js');
 
-        <!-- Project 10: Dune Chart Pavilion -->
-        <article class="project split-screen reverse" data-project="dune">
-            <div class="left-panel">
-                <div class="content-wrapper">
-                    <span class="project-category">Small Interventions</span>
-                    <h2 class="project-title">Dune — Chart Art Fair Pavilion</h2>
-                    <div class="project-meta">
-                        <p>Location: Charlottenborg, Copenhagen</p>
-                        <p>Year: 2022</p>
-                        <p>Type: Temporary Pavilion</p>
-                        <p>Team: Brøn Studio, Victor Lacima Architects, Gonzalo Rivas Zinno, Anders Fønss</p>
-                    </div>
-                    <div class="project-description">
-                        <p>An oasis for Chart, designed as an abstract greenhouse placed in the courtyard of Kunsthal Charlottenborg. The architecture serves as the backdrop for a white sand dune, creating a soft, undulating surface for social interaction and relaxation.</p>
-                        <p>The pavilion is temporary, so the focus is on circular design. The plastic came from leftover greenhouse materials in Spain, used in DUNE for a few days and later repurposed into handbags by Studio Soriano. The wood was reused in another project.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="right-panel">
-                <div class="project-image parallax-container">
-                    <div class="parallax-layer" style="background-image: url('images/dune-1.jpg');"></div>
-                </div>
-            </div>
-        </article>
+  /* Random project order on every visit. The first four always come from the lead projects below. */
+  var LEAD = ['het', 'echoes', 'astruptunet', 'hemmesta', 'dune', 'maritime'];
+  (function shuffleProjects() {
+    var work = document.getElementById('work');
+    var all = Array.prototype.slice.call(work.querySelectorAll(':scope > .project'));
+    function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+    var lead = shuffle(all.filter(function (p) { return LEAD.indexOf(p.id) > -1; }));
+    var top = lead.slice(0, 4);
+    var rest = shuffle(lead.slice(4).concat(all.filter(function (p) { return LEAD.indexOf(p.id) < 0; })));
+    top.concat(rest).forEach(function (p) { work.appendChild(p); });
+    window.__defaultOrder = top.concat(rest);
+    window.__shuffle = shuffle;
+  })();
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    </section>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <p>Brøn Studio</p>
-                <p>CVR 40877614</p>
-                <p>Roarsvej 19 2 th</p>
-                <p>Frederiksberg, Copenhagen</p>
-            </div>
-            <div class="footer-right">
-                <p>© 2026 Brøn Studio</p>
-                <p>Circular and Cultural Architecture</p>
-            </div>
-        </div>
-    </footer>
+  /* Reveal squares as they come into view (only those below the first screen start hidden). */
+  var projects = Array.prototype.slice.call(document.querySelectorAll('.project'));
+  if ('IntersectionObserver' in window) {
+    var vh = window.innerHeight;
+    projects.forEach(function (p) { if (p.getBoundingClientRect().top > vh) p.classList.add('pending'); });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.remove('pending'); e.target.classList.add('seen'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.15 });
+    projects.forEach(function (p) { io.observe(p); });
+  } else {
+    projects.forEach(function (p) { p.classList.add('seen'); });
+  }
 
-    <script src="script.js"></script>
+  /* Studio page: shown on #studio, the projects everywhere else. */
+  var main = document.getElementById('top'), studio = document.getElementById('studio');
+  function route() {
+    var onStudio = location.hash === '#studio';
+    studio.hidden = !onStudio; main.hidden = onStudio;
+    if (onStudio) window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', function () {
+    var wasStudio = main.hidden; route();
+    if (wasStudio && !main.hidden && location.hash) {
+      var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView();
+    }
+  });
+  route();
+
+  /* Projects button: category list over the hero. Choosing a category shows only its projects, priority ones first.
+     Closing the list brings back every project in the visit's original order. */
+  var work = document.getElementById('work');
+  var cats = document.getElementById('cats'), pBtn = document.getElementById('projects-btn');
+  var catBtns = Array.prototype.slice.call(cats.querySelectorAll('button'));
+  var activeCat = null;
+  function has(p, attr, c) { return (' ' + (p.dataset[attr] || '') + ' ').indexOf(' ' + c + ' ') > -1; }
+  function showAll() {
+    activeCat = null;
+    catBtns.forEach(function (b) { b.removeAttribute('aria-pressed'); });
+    window.__defaultOrder.forEach(function (p) { p.hidden = false; work.appendChild(p); });
+  }
+  function filter(c) {
+    activeCat = c;
+    catBtns.forEach(function (b) { if (b.dataset.cat === c) b.setAttribute('aria-pressed', 'true'); else b.removeAttribute('aria-pressed'); });
+    var all = window.__defaultOrder;
+    var members = all.filter(function (p) { return has(p, 'cats', c); });
+    var first = window.__shuffle(members.filter(function (p) { return has(p, 'prio', c); }));
+    /* Fixed lead project per category */
+    var LEADS = { cultural: 'astruptunet' };
+    if (LEADS[c]) first.sort(function (a, b) { return (b.id === LEADS[c]) - (a.id === LEADS[c]); });
+    var then = window.__shuffle(members.filter(function (p) { return !has(p, 'prio', c); }));
+    first.concat(then).forEach(function (p) { p.hidden = false; work.appendChild(p); });
+    all.forEach(function (p) { if (members.indexOf(p) < 0) { p.hidden = true; work.appendChild(p); } });
+    var go = first.concat(then)[0];
+    if (go) go.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+  }
+  function openCats() {
+    if (main.hidden) { location.hash = '#top'; }
+    cats.hidden = false; pBtn.setAttribute('aria-expanded', 'true');
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  }
+  function closeCats() { cats.hidden = true; pBtn.setAttribute('aria-expanded', 'false'); showAll(); }
+  pBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (cats.hidden || main.hidden) openCats(); else closeCats();
+  });
+  catBtns.forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (activeCat === b.dataset.cat) showAll(); else filter(b.dataset.cat);
+    });
+  });
+
+  /* One text square open at a time. */
+  var openOne = null;
+  function closeAll() { if (openOne) { openOne(); openOne = null; } }
+  function makeToggle(host, trigger, panel) {
+    function close() { panel.hidden = true; host.classList.remove('open'); trigger.setAttribute('aria-expanded', 'false'); }
+    function open() {
+      closeAll(); panel.hidden = false; panel.scrollTop = 0; host.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true'); panel.focus({ preventScroll: true }); openOne = close;
+    }
+    panel.addEventListener('click', function (e) { e.stopPropagation(); closeAll(); trigger.focus({ preventScroll: true }); });
+    return function () { if (panel.hidden) open(); else closeAll(); };
+  }
+
+
+  /* Projects: side dots, swipe, project text. */
+  document.querySelectorAll('.square').forEach(function (sq) {
+    var n = +sq.dataset.n;
+    var track = sq.querySelector('.track');
+    var stage = sq.querySelector('.stage');
+    var toggle = makeToggle(sq, stage, sq.parentNode.querySelector('.panel'));
+    /* Endless loop: a copy of the last image sits before the first and a copy of the first after the last.
+       After sliding onto a copy, the strip jumps silently to the real image. */
+    var pos = 1, busy = false, timer = null;
+    function place(animate) {
+      if (!animate) { track.style.transition = 'none'; }
+      track.style.transform = 'translateX(' + (-100 * pos) + '%)';
+      if (!animate) { void track.offsetWidth; track.style.transition = ''; }
+    }
+    function settle() {
+      clearTimeout(timer); busy = false;
+      if (pos === 0) { pos = n; place(false); }
+      else if (pos === n + 1) { pos = 1; place(false); }
+    }
+    if (n > 1) {
+      var imgs = track.querySelectorAll('img');
+      var head = imgs[n - 1].cloneNode(true), tail = imgs[0].cloneNode(true);
+      [head, tail].forEach(function (c) { c.alt = ''; c.setAttribute('aria-hidden', 'true'); c.removeAttribute('loading'); });
+      track.insertBefore(head, imgs[0]); track.appendChild(tail);
+      place(false);
+      track.addEventListener('transitionend', function (e) { if (e.target === track) settle(); });
+    }
+    function go(d) {
+      if (n < 2) return;
+      if (busy) settle();
+      busy = true; pos += d; place(true);
+      timer = setTimeout(settle, 900);
+    }
+    sq.go = go;
+    var prev = sq.querySelector('.prev'), next = sq.querySelector('.next');
+    if (prev) prev.addEventListener('click', function (e) { e.stopPropagation(); go(-1); });
+    if (next) next.addEventListener('click', function (e) { e.stopPropagation(); go(1); });
+
+    var sx = null, sy = null, swiped = false;
+    stage.addEventListener('pointerdown', function (e) { sx = e.clientX; sy = e.clientY; swiped = false; });
+    stage.addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { swiped = true; go(dx < 0 ? 1 : -1); }
+      sx = null;
+    });
+    stage.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (swiped) { swiped = false; return; }
+      toggle();
+    });
+  });
+
+  /* Contact: email or call. */
+  var cBtn = document.getElementById('contact-btn'), cMenu = document.getElementById('contact-menu');
+  function closeContact() { cMenu.hidden = true; cBtn.setAttribute('aria-expanded', 'false'); }
+  cBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); var open = cMenu.hidden; cMenu.hidden = !open; cBtn.setAttribute('aria-expanded', String(open));
+  });
+  cMenu.addEventListener('click', function (e) { e.stopPropagation(); });
+  document.addEventListener('click', closeContact);
+
+  document.addEventListener('click', closeAll);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeAll(); closeContact(); return; }
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var mid = window.innerHeight / 2, best = null, bd = Infinity;
+    document.querySelectorAll('.square').forEach(function (s) {
+      var r = s.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - mid);
+      if (d < bd && r.bottom > 0 && r.top < window.innerHeight) { bd = d; best = s; }
+    });
+    if (best && best.go) { e.preventDefault(); best.go(e.key === 'ArrowRight' ? 1 : -1); }
+  });
+})();
+</script>
+
 </body>
 </html>
